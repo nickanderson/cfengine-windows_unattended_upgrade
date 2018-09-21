@@ -10,14 +10,29 @@ bundle agent windows_unattended_upgrade
       "min_offset" string => "2";
 
       "tt"
-        string => execresult( 'powershell "(get-date).AddMinutes($(min_offset)).ToString(\\"HH:mm\\")"', useshell);
+        string => execresult( 'powershell "(get-date).AddMinutes($(min_offset)).ToString(\\"HH:mm\\")"',
+                              useshell);
 
   files:
       "$(upgrade_script)"
-        edit_template => "$(this.promise_dirname)/../templates/upgrade.bat.tpl";
+        edit_template => "$(this.promise_dirname)/../templates/upgrade.bat.txt",
+        create => "true",
+        if => not( strcmp( $(sys.cf_version), $(cfengine_software.pkg_version) ));
+
+      "$(upgrade_script)"
+        delete => windows_unattended_upgrade_tidy,
+        if => strcmp( $(sys.cf_version), $(cfengine_software.pkg_version) );
 
   commands:
+
     windows::
-      '$(sys.winsysdir)\schtasks.exe /Create /SC ONCE /TN \\"CFEngine Agent Upgrade\\" /TR \\"$(upgrade_script)\\" /ST $(tt) /RU \\"System\\"'
+
+      '$(sys.winsysdir)\schtasks.exe /Create /SC ONCE /TN "CFEngine Agent Upgrade" /TR "$(upgrade_script)" /ST $(tt) /RU "System" /F'
         if => not( strcmp( $(sys.cf_version), $(cfengine_software.pkg_version) ));
+}
+
+body delete windows_unattended_upgrade_tidy
+{
+      dirlinks => "delete";
+      rmdirs   => "true";
 }
