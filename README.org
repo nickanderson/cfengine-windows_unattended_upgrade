@@ -1,0 +1,45 @@
+#+Title: CFEngine Enterprise Unattended upgrade for windows
+
+This policy works around bugs 3.10.0-4, and 3.12.0 that prevent the package
+from upgrading successfully.
+
+* Integration
+
+This policy should be included and executed by =standalone_self_upgrade.cf=.
+
+Prepend this policy to =standalone_self_upgrade.cf=.
+
+#+BEGIN_SRC cfenigne3
+  bundle common standalone_self_upgrade_file_control
+  {
+    vars:
+      "inputs" slist => { "$(this.promise_dirname)$(const.dirsep)services$(const.dirsep)windows_unattended_upgrade$(const.dirsep)policy$(const.dirsep)standalone_self_upgrade.cf" };
+  }
+  
+  body file control
+  {
+    inputs => { @(standalone_self_upgrade_file_control.inputs) };
+  }
+#+END_SRC
+
+Add a promise to run the windows_unattended_upgrade bundle between the
+=methods= promises for =CFEngine Version= and =Follow up Run=.
+
+For example:
+
+
+#+BEGIN_SRC cfenigne3
+      "CFEngine Version"
+        usebundle => cfengine_software_version;
+
+      "Unattended Upgrade Workaround"
+        usebundle => windows_unattended_upgrade;
+
+      "Follow up Run"
+        usebundle => agent_run,
+        comment => "We execute the agent after managing the software version so
+                    that the next collection will see the currently running version, instead
+                    of the version that was running at the beginning of the agent
+                    execution.";
+#+END_SRC
+
