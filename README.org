@@ -5,6 +5,9 @@ from upgrading successfully.
 
 * Integration
 
+In your masterfiles create =services/windows_unattended_upgrade= and place the
+contents of this repository inside.
+
 This policy should be included and executed by =standalone_self_upgrade.cf=.
 
 Prepend this policy to =standalone_self_upgrade.cf=.
