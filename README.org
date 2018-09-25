@@ -5,10 +5,14 @@ from upgrading successfully.
 
 * Integration
 
-In your masterfiles create =services/windows_unattended_upgrade= and place the
-contents of this repository inside.
+1) Add the workaround policy to masterfiles.
+
+Create =services/windows_unattended_upgrade= and place the contents of this
+repository inside.
 
 This policy should be included and executed by =standalone_self_upgrade.cf=.
+
+2) Edit =standalone_self_upgrade.cf= to include the workaround policy
 
 Prepend this policy to =standalone_self_upgrade.cf=.
 
@@ -35,13 +39,11 @@ Prepend this policy to =standalone_self_upgrade.cf=.
 
 Add =windows= to the list of classes for =__supported_platform= in =bundle agent cfengine_software_version=.
 
-
 #+BEGIN_SRC diff
        "__supported_platform"
 -        or => { "redhat.!redhat_4", "centos.!centos_4", "debian", "ubuntu", "hpux", "aix" };
 +        or => { "redhat.!redhat_4", "centos.!centos_4", "debian", "ubuntu", "hpux", "aix", "windows" };
 #+END_SRC
-
 
 Add a promise to run the =windows_unattended_upgrade= bundle after the
 =methods= promise to =usebundle => cfengine_software_version_packages1;=
