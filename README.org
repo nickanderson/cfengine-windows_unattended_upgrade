@@ -25,8 +25,8 @@ Prepend this policy to =standalone_self_upgrade.cf=.
   }
 #+END_SRC
 
-Add a promise to run the windows_unattended_upgrade bundle between the
-=methods= promises for =CFEngine Version= and =Follow up Run=.
+Add a promise to run the windows_unattended_upgrade bundle after the
+=methods= promise for =CFEngine Version=.
 
 For example:
 
@@ -37,12 +37,5 @@ For example:
 
       "Unattended Upgrade Workaround"
         usebundle => windows_unattended_upgrade;
-
-      "Follow up Run"
-        usebundle => agent_run,
-        comment => "We execute the agent after managing the software version so
-                    that the next collection will see the currently running version, instead
-                    of the version that was running at the beginning of the agent
-                    execution.";
 #+END_SRC
 
