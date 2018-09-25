@@ -25,17 +25,31 @@ Prepend this policy to =standalone_self_upgrade.cf=.
   }
 #+END_SRC
 
-Add a promise to run the windows_unattended_upgrade bundle after the
-=methods= promise for =CFEngine Version=.
+Add =windows= to the list of classes for =__supported_platform= in =bundle agent cfengine_software_version=.
+
+
+#+BEGIN_SRC diff
+       "__supported_platform"
+-        or => { "redhat.!redhat_4", "centos.!centos_4", "debian", "ubuntu", "hpux", "aix" };
++        or => { "redhat.!redhat_4", "centos.!centos_4", "debian", "ubuntu", "hpux", "aix", "windows" };
+#+END_SRC
+
+
+Add a promise to run the =windows_unattended_upgrade= bundle after the
+=methods= promise to =usebundle => cfengine_software_version_packages1;=
 
 For example:
 
-
-#+BEGIN_SRC cfenigne3
-      "CFEngine Version"
-        usebundle => cfengine_software_version;
-
-      "Unattended Upgrade Workaround"
-        usebundle => windows_unattended_upgrade;
+#+BEGIN_SRC diff
+       "Manage CFEngine Version"
+         usebundle => cfengine_software_version_packages1;
+ 
++      "Unattended Upgrade Workaround"
++        usebundle => windows_unattended_upgrade,
++        if => "windows";
++
+   reports:
+       !__supported_platform.inform_mode::
+         "$(this.bundle) $(package_dir) is not supported";
 #+END_SRC
 
