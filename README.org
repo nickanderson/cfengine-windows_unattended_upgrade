@@ -12,17 +12,26 @@ This policy should be included and executed by =standalone_self_upgrade.cf=.
 
 Prepend this policy to =standalone_self_upgrade.cf=.
 
-#+BEGIN_SRC cfenigne3
-  bundle common standalone_self_upgrade_file_control
-  {
-    vars:
-      "inputs" slist => { "$(this.promise_dirname)$(const.dirsep)services$(const.dirsep)windows_unattended_upgrade$(const.dirsep)policy$(const.dirsep)standalone_self_upgrade.cf" };
-  }
-  
-  body file control
-  {
-    inputs => { @(standalone_self_upgrade_file_control.inputs) };
-  }
+#+BEGIN_SRC diff
+@@ -3,6 +3,17 @@
+ # WARNING: Including this policy into the inputs of another policy may result in
+ # duplicate definition of bundles.
+ 
++bundle common standalone_self_upgrade_file_control
++{
++  vars:
++      "inputs" slist => { "$(this.promise_dirname)$(const.dirsep)services$(const.dirsep)windows_unattended_upgrade$(const.dirsep)policy$(const.dirsep)standalone_self_upgrade.cf" };
++}
++
++body file control
++{
++        inputs => { @(standalone_self_upgrade_file_control.inputs) };
++}
++
+ bundle agent main
+ # @brief This bundle drives the self upgrade. It actuates the appropriate
+ # bundles to download binaries to the hub for serving to clients, caching the
+
 #+END_SRC
 
 Add =windows= to the list of classes for =__supported_platform= in =bundle agent cfengine_software_version=.
