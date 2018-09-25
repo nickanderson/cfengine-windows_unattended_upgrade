@@ -3,6 +3,8 @@
 This policy works around bugs 3.10.0-4, and 3.12.0 that prevent the package
 from upgrading successfully.
 
+Tested against masterfiles from commit https://github.com/cfengine/masterfiles/commit/c6377ffce8b2047ce9e4421fd1dbf0e0c828c6f5
+
 * Integration
 
 1) Add the workaround policy to masterfiles.
