@@ -13,7 +13,6 @@ This policy should be included and executed by =standalone_self_upgrade.cf=.
 Prepend this policy to =standalone_self_upgrade.cf=.
 
 #+BEGIN_SRC diff
-@@ -3,6 +3,17 @@
  # WARNING: Including this policy into the inputs of another policy may result in
  # duplicate definition of bundles.
  
